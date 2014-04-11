@@ -18,7 +18,13 @@
 (define-condition triangle-error  (error) ())
 
 (defun triangle (a b c)
-  :write-me)
+  (let* ((lst (list a b c))
+         (sort-list (sort lst #'<)))
+    (destructuring-bind (x y z) sort-list
+      (cond ((or (<= x 0) (<= (+ x y) z)) (error 'triangle-error))
+            ((= x z) :equilateral)
+            ((or (= x y) (= y z)) :isosceles)
+            (t :scalene)))))
 
 
 (define-test test-equilateral-triangles-have-equal-sides
