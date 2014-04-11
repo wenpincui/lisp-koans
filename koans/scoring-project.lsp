@@ -50,8 +50,19 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  ; You need to write this method
-)
+  (let* ((score 0)
+         (sort-dice (sort dice #'<))
+         (appear (loop for i from 1 to 6 collect (count i dice)))
+         (max-num (reduce #'max appear))
+         (max-pos (1+ (position max-num appear))))
+    (when (>= max-num 3)
+      (if (= max-pos 1)
+          (incf score 1000)
+          (incf score (* 100 max-pos)))
+      (setf sort-dice (remove max-pos sort-dice :count 3)))
+    (incf score (+ (* 100 (count 1 sort-dice))
+                   (* 50 (count 5 sort-dice))))
+    score))
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
